@@ -41,6 +41,11 @@ install: all
 	sed "s/VERSION/${VERSION}/g" < dwm.1 > ${DESTDIR}${MANPREFIX}/man1/dwm.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/dwm.1
 
+compile_commands: 
+	make --always-make --dry-run | grep -wE 'cc' | grep -w '\-c' \
+		| jq -nR '[inputs|{directory:".", command:., file: match(" [^ ]+$$").string[1:]}]'\
+		> compile_commands.json
+
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\
 		${DESTDIR}${MANPREFIX}/man1/dwm.1
